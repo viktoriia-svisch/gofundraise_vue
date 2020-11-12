@@ -18,23 +18,25 @@
           <el-form-item>
             <el-button type="primary" @click="getData">Query</el-button>
           </el-form-item>
-          <el-form-item>
-            <el-tooltip effect="dark" content="Fon-size in table" placement="top-start">
-              <el-select v-model="textStyles.baseFontSize" placeholder="Base fontsize">
-                <el-option v-for="item in fontSizes" :key="item" :label="item" :value="item"/>
-              </el-select>
-            </el-tooltip>
-          </el-form-item>
-          <el-form-item>
-            <el-tooltip effect="dark" content="Name text color" placement="top-start">
-              <el-color-picker v-model="textStyles.nameColor"/>
-            </el-tooltip>
-          </el-form-item>
-          <el-form-item>
-            <el-tooltip effect="dark" content="Total text color" placement="top-start">
-              <el-color-picker v-model="textStyles.totalColor"/>
-            </el-tooltip>
-          </el-form-item>
+          <el-card class="box-card">
+            <el-form-item>
+              <el-tooltip effect="dark" content="Fon-size in table" placement="top-start">
+                <el-select v-model="textStyles.baseFontSize" placeholder="Base fontsize">
+                  <el-option v-for="item in fontSizes" :key="item" :label="item" :value="item"/>
+                </el-select>
+              </el-tooltip>
+            </el-form-item>
+            <el-form-item>
+              <el-tooltip effect="dark" content="Name text color" placement="top-start">
+                <el-color-picker v-model="textStyles.nameColor"/>
+              </el-tooltip>
+            </el-form-item>
+            <el-form-item>
+              <el-tooltip effect="dark" content="Total text color" placement="top-start">
+                <el-color-picker v-model="textStyles.totalColor"/>
+              </el-tooltip>
+            </el-form-item>
+          </el-card>
         </el-form>
       </div>
       <div class="block">
@@ -50,20 +52,25 @@
             </el-table-column>
             <el-table-column label="Name">
               <template slot-scope="scope">
-                <span :style="'color:'+ textStyles.nameColor + ';font-size:' + textStyles.baseFontSize + 'px'">{{scope.row.CreatorName}}</span>
+                <span
+                    :style="'color:'+ textStyles.nameColor + ';font-size:' + textStyles.baseFontSize + 'px'">{{ scope.row.CreatorName }}</span>
               </template>
             </el-table-column>
             <template v-if="this.currentPageType === 'S'">
               <el-table-column label="Total">
                 <template slot-scope="scope">
-                  <span :style="'color:'+ textStyles.totalColor + ';font-size:' + textStyles.baseFontSize + 'px'">{{scope.row.Total }}</span>
+                  <span :style="'color:'+ textStyles.totalColor + ';font-size:' + textStyles.baseFontSize + 'px'">{{
+                      scope.row.Total
+                    }}</span>
                 </template>
               </el-table-column>
             </template>
             <template v-else>
               <el-table-column label="Team total">
                 <template slot-scope="scope">
-                  <span :style="'color:'+ textStyles.totalColor + ';font-size:' + textStyles.baseFontSize + 'px'">{{scope.row.Team.TeamTotal }}</span>
+                  <span :style="'color:'+ textStyles.totalColor + ';font-size:' + textStyles.baseFontSize + 'px'">{{
+                      scope.row.Team.TeamTotal
+                    }}</span>
                 </template>
               </el-table-column>
             </template>
@@ -93,7 +100,7 @@ export default {
       pageSize: '5',
     },
     textStyles: {
-      baseFontSize: '16',
+      baseFontSize: 16,
       nameColor: "#111111",
       totalColor: "#111111"
     },
@@ -103,20 +110,17 @@ export default {
   methods: {
     getData() {
       this.requestInProgress = true;
-      console.log(this.textStyles);
       this.currentPageType = this.formInline.pageType;
       axios.get(API_URL + `eventcampaignid=${this.formInline.eventId}&pagetype=${this.formInline.pageType}` +
           `&sortorder=desc&sortby=4&pagesize=${this.formInline.pageSize}`).then((data) => {
         this.pages = data.data.Pages;
         this.requestInProgress = false;
       })
-
     }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
 </style>
