@@ -18,6 +18,8 @@
           <el-select v-model="formInline.fontSize" placeholder="Base fontsize">
             <el-option v-for="item in fontSizes" :key="item" :label="item" :value="item"></el-option>
           </el-select>
+          <el-color-picker v-model="textStyles.nameColor"></el-color-picker>
+          <el-color-picker v-model="textStyles.totalColor"></el-color-picker>
           <el-form-item>
             <el-button type="primary" @click="getData">Query</el-button>
           </el-form-item>
@@ -37,6 +39,9 @@
             <el-table-column
                 prop="CreatorName"
                 label="Name">
+              <template slot-scope="scope">
+                <span :style="'color:'+ textStyles.nameColor + ';font-size:' + textStyles.baseFontSize + 'px'">{{scope.row.CreatorName}}</span>
+              </template>
             </el-table-column>
             <template v-if="this.currentPageType === 'S'">
               <el-table-column
@@ -69,17 +74,22 @@ export default {
   },
   data: () => ({
     pages: [],
-    fontSizes: [10, 12, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26],
+    fontSizes: [10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26],
     formInline: {
       eventId: '1',
       pageType: 'S',
       pageSize: '5',
     },
+    textStyles: {
+      baseFontSize: '16',
+      nameColor: "#111111",
+      totalColor: "#111111"
+    },
     currentPageType: "S"
   }),
   methods: {
     getData() {
-      console.log(this.formInline);
+      console.log(this.textStyles);
       this.currentPageType = this.formInline.pageType;
       axios.get(API_URL + `eventcampaignid=${this.formInline.eventId}&pagetype=${this.formInline.pageType}` +
           `&sortorder=desc&sortby=4&pagesize=${this.formInline.pageSize}`).then((data) => {
