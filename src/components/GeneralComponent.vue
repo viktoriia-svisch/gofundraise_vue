@@ -15,6 +15,9 @@
               <el-option label="Single" value="S"></el-option>
             </el-select>
           </el-form-item>
+          <el-select v-model="formInline.fontSize" placeholder="Base fontsize">
+            <el-option v-for="item in fontSizes" :key="item" :label="item" :value="item"></el-option>
+          </el-select>
           <el-form-item>
             <el-button type="primary" @click="getData">Query</el-button>
           </el-form-item>
@@ -25,20 +28,28 @@
           <el-table
               :data="pages"
               style="width: 100%">
-              <el-table-column prop="ImagePath"
-                               label="Avatar">
-                <template slot-scope="scope">
-                  <el-avatar size="large" :src="scope.row.ImagePath"></el-avatar>
-                </template>
-              </el-table-column>
+            <el-table-column prop="ImagePath"
+                             label="Avatar">
+              <template slot-scope="scope">
+                <el-avatar size="large" :src="scope.row.ImagePath"></el-avatar>
+              </template>
+            </el-table-column>
             <el-table-column
                 prop="CreatorName"
                 label="Name">
             </el-table-column>
-            <el-table-column
-                prop="Total"
-                label="Total">
-            </el-table-column>
+            <template v-if="this.currentPageType === 'S'">
+              <el-table-column
+                  prop="Total"
+                  label="Total">
+              </el-table-column>
+            </template>
+            <template v-else>
+              <el-table-column
+                  prop="Team.TeamTotal"
+                  label="Team total">
+              </el-table-column>
+            </template>
           </el-table>
         </template>
       </div>
@@ -58,27 +69,28 @@ export default {
   },
   data: () => ({
     pages: [],
+    fontSizes: [10, 12, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26],
     formInline: {
       eventId: '1',
       pageType: 'S',
       pageSize: '5',
-    }
+    },
+    currentPageType: "S"
   }),
   methods: {
     getData() {
       console.log(this.formInline);
+      this.currentPageType = this.formInline.pageType;
       axios.get(API_URL + `eventcampaignid=${this.formInline.eventId}&pagetype=${this.formInline.pageType}` +
-      `&sortorder=desc&sortby=4&pagesize=${this.formInline.pageSize}`).then((data)=> {
+          `&sortorder=desc&sortby=4&pagesize=${this.formInline.pageSize}`).then((data) => {
+        this.pages = [];
         this.pages = data.data.Pages;
       })
 
     }
   },
   mounted() {
-    setTimeout(()=> {
-      this.getData();
-    },10000)
-
+    this.getData();
   }
 }
 </script>
