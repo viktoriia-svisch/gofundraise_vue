@@ -4,24 +4,36 @@
       <div class="block">
         <el-form :inline="true" :model="formInline" class="demo-form-inline">
           <el-form-item label="Event ID">
-            <el-input v-model="formInline.eventId" placeholder="Event ID"></el-input>
+            <el-input v-model="formInline.eventId" placeholder="Event ID"/>
           </el-form-item>
           <el-form-item label="Elements quality">
-            <el-input v-model="formInline.pageSize" placeholder="Quality"></el-input>
+            <el-input v-model="formInline.pageSize" placeholder="Quality"/>
           </el-form-item>
           <el-form-item label="Page type">
             <el-select v-model="formInline.pageType" placeholder="Team or Single">
-              <el-option label="Team" value="T"></el-option>
-              <el-option label="Single" value="S"></el-option>
+              <el-option label="Team" value="T"/>
+              <el-option label="Single" value="S"/>
             </el-select>
           </el-form-item>
-          <el-select v-model="formInline.fontSize" placeholder="Base fontsize">
-            <el-option v-for="item in fontSizes" :key="item" :label="item" :value="item"></el-option>
-          </el-select>
-          <el-color-picker v-model="textStyles.nameColor"></el-color-picker>
-          <el-color-picker v-model="textStyles.totalColor"></el-color-picker>
           <el-form-item>
             <el-button type="primary" @click="getData">Query</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-tooltip effect="dark" content="Fon-size in table" placement="top-start">
+              <el-select v-model="textStyles.baseFontSize" placeholder="Base fontsize">
+                <el-option v-for="item in fontSizes" :key="item" :label="item" :value="item"/>
+              </el-select>
+            </el-tooltip>
+          </el-form-item>
+          <el-form-item>
+            <el-tooltip effect="dark" content="Name text color" placement="top-start">
+              <el-color-picker v-model="textStyles.nameColor"/>
+            </el-tooltip>
+          </el-form-item>
+          <el-form-item>
+            <el-tooltip effect="dark" content="Total text color" placement="top-start">
+              <el-color-picker v-model="textStyles.totalColor"/>
+            </el-tooltip>
           </el-form-item>
         </el-form>
       </div>
@@ -47,12 +59,18 @@
               <el-table-column
                   prop="Total"
                   label="Total">
+                <template slot-scope="scope">
+                  <span :style="'color:'+ textStyles.totalColor + ';font-size:' + textStyles.baseFontSize + 'px'">{{scope.row.Total }}</span>
+                </template>
               </el-table-column>
             </template>
             <template v-else>
               <el-table-column
                   prop="Team.TeamTotal"
                   label="Team total">
+                <template slot-scope="scope">
+                  <span :style="'color:'+ textStyles.totalColor + ';font-size:' + textStyles.baseFontSize + 'px'">{{scope.row.Team.TeamTotal }}</span>
+                </template>
               </el-table-column>
             </template>
           </el-table>
@@ -74,7 +92,7 @@ export default {
   },
   data: () => ({
     pages: [],
-    fontSizes: [10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26],
+    fontSizes: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26],
     formInline: {
       eventId: '1',
       pageType: 'S',
@@ -98,9 +116,6 @@ export default {
       })
 
     }
-  },
-  mounted() {
-    this.getData();
   }
 }
 </script>
