@@ -40,34 +40,28 @@
       <div class="block">
         <template>
           <el-table
+              v-loading="requestInProgress"
               :data="pages"
               style="width: 100%">
-            <el-table-column prop="ImagePath"
-                             label="Avatar">
+            <el-table-column label="Avatar">
               <template slot-scope="scope">
                 <el-avatar size="large" :src="scope.row.ImagePath"></el-avatar>
               </template>
             </el-table-column>
-            <el-table-column
-                prop="CreatorName"
-                label="Name">
+            <el-table-column label="Name">
               <template slot-scope="scope">
                 <span :style="'color:'+ textStyles.nameColor + ';font-size:' + textStyles.baseFontSize + 'px'">{{scope.row.CreatorName}}</span>
               </template>
             </el-table-column>
             <template v-if="this.currentPageType === 'S'">
-              <el-table-column
-                  prop="Total"
-                  label="Total">
+              <el-table-column label="Total">
                 <template slot-scope="scope">
                   <span :style="'color:'+ textStyles.totalColor + ';font-size:' + textStyles.baseFontSize + 'px'">{{scope.row.Total }}</span>
                 </template>
               </el-table-column>
             </template>
             <template v-else>
-              <el-table-column
-                  prop="Team.TeamTotal"
-                  label="Team total">
+              <el-table-column label="Team total">
                 <template slot-scope="scope">
                   <span :style="'color:'+ textStyles.totalColor + ';font-size:' + textStyles.baseFontSize + 'px'">{{scope.row.Team.TeamTotal }}</span>
                 </template>
@@ -103,16 +97,18 @@ export default {
       nameColor: "#111111",
       totalColor: "#111111"
     },
-    currentPageType: "S"
+    currentPageType: "S",
+    requestInProgress: false
   }),
   methods: {
     getData() {
+      this.requestInProgress = true;
       console.log(this.textStyles);
       this.currentPageType = this.formInline.pageType;
       axios.get(API_URL + `eventcampaignid=${this.formInline.eventId}&pagetype=${this.formInline.pageType}` +
           `&sortorder=desc&sortby=4&pagesize=${this.formInline.pageSize}`).then((data) => {
-        this.pages = [];
         this.pages = data.data.Pages;
+        this.requestInProgress = false;
       })
 
     }
